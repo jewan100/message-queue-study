@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,16 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v0/ocr")
+@RequestMapping("/api/v1/ocr")
 @Slf4j
-public class OcrControllerV0 {
+public class OcrControllerV1 {
 
 	private final OcrService ocrService;
 
 	@PostMapping("/sync")
-	public ResponseEntity<OcrResponse> post(@RequestBody OcrRequest request) {
-		OcrResponse response = ocrService.runSync(request);
-		return ResponseEntity.ok(response);
+	public CompletableFuture<ResponseEntity<OcrResponse>> post(@RequestBody OcrRequest request) {
+		return ocrService.runASync(request).thenApply(response -> {
+			return ResponseEntity.ok(response);
+		});
 	}
 
 }
