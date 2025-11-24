@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: message-queue-api-server
+
+server:
+  port: 8080
+
+ocr:
+  worker:
+    base-url: http://localhost:8000
+    predict-path: /predict
+    connect-timeout-ms: 2000
+    read-timeout-ms: 60000
