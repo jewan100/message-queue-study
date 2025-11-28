@@ -17,7 +17,7 @@ public class OcrWorkerClientConfig {
 		factory.setReadTimeout(props.readTimeoutMs());
 		
 		return RestClient.builder()
-				.baseUrl(props.baseUrl())
+				// .baseUrl(props.baseUrl())
 				.requestFactory(factory)
 				.build();
 	}

@@ -1,6 +1,9 @@
 spring:
   application:
     name: message-queue-api-server
+  mvc:
+    async:
+      request-timeout: 120000
 
 server:
   port: 8080
@@ -9,5 +12,11 @@ ocr:
   worker:
     base-url: http://localhost:8000
     predict-path: /predict
-    connect-timeout-ms: 2000
+    connect-timeout-ms: 5000
     read-timeout-ms: 60000
+
+    nodes:
+      - http://localhost:8000
+      - http://localhost:8001
+      - http://localhost:8002
+      - http://localhost:8003

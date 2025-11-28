@@ -23,7 +23,7 @@ public class OcrControllerV0 {
 
 	@PostMapping("/sync")
 	public ResponseEntity<OcrResponse> post(@RequestBody OcrRequest request) {
-		OcrResponse response = ocrService.runSync(request);
+		OcrResponse response = ocrService.runSyncV0(request);
 		return ResponseEntity.ok(response);
 	}
 
