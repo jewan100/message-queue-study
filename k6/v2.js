@@ -1,7 +1,7 @@
 import http from "k6/http";
 import { check } from "k6";
 
-const BASE_URL = "http://localhost:8080/api/v1/ocr";
+const BASE_URL = "http://localhost:8080/api/v2/ocr";
 const PDF_NAME = "sample.pdf";
 
 const vus = __ENV.VUS ? parseInt(__ENV.VUS, 10) : 1;

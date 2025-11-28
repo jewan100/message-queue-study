@@ -1,25 +1,36 @@
 import http from "k6/http";
 import { check } from "k6";
 
-const vus = __ENV.VUS ? parseInt(__ENV.VUS, 10) : 1;
-const duration = __ENV.DURATION || "30s";
-const iterationsEnv = __ENV.ITERATIONS;
+const BASE_URL = "http://localhost:8080/api/v0/ocr";
+const PDF_NAME = "sample.pdf";
 
-export const options = iterationsEnv
-  ? {
+const vus = __ENV.VUS ? parseInt(__ENV.VUS, 10) : 1;
+const SLA_MS = 60000;
+
+export const options = {
+  scenarios: {
+    ocr_sync: {
+      executor: "per-vu-iterations",
       vus,
-      iterations: parseInt(iterationsEnv, 10),
-    }
-  : {
-      vus,
-      duration,
-    };
+      iterations: 1,
+      maxDuration: "120s",
+      exec: "default",
+    },
+  },
+  thresholds: {
+    http_req_duration: [`p(95)<${SLA_MS}`],
+    http_req_failed: ["rate==0"],
+  },
+};
 
 export default function () {
-  const url = "http://localhost:8080/api/v0/ocr/sync";
-  const payload = JSON.stringify({ pdfName: "sample.pdf" });
+  const url = `${BASE_URL}/sync`;
+
+  const payload = JSON.stringify({ pdfName: PDF_NAME });
+
   const params = {
     headers: { "Content-Type": "application/json" },
+    timeout: "60s",
   };
 
   const res = http.post(url, payload, params);
