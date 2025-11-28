@@ -12,4 +12,4 @@ LAYOUT_MODEL_DIR = MODEL_ROOT / "PP-DocLayout_plus-L_infer"
 FORMULA_MODEL_NAME = "PP-FormulaNet_plus-L"
 LAYOUT_MODEL_NAME = "PP-DocLayout_plus-L"
 
-DEVICE = "gpu"
+DEVICE = "cpu"
