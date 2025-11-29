@@ -4,6 +4,15 @@ spring:
   mvc:
     async:
       request-timeout: 120000
+  datasource:
+   url: jdbc:postgresql://localhost:5432/mq_database
+   username: jewan
+   password: jewan
+   driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+       ddl-auto: update
+    show-sql: true
 
 server:
   port: 8080
