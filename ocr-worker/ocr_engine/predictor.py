@@ -1,6 +1,5 @@
 # ocr_engine/predictor.py
 from pathlib import Path
-import time
 
 from .config import DATA_DIR
 from .model_loader import get_pipeline
@@ -14,17 +13,11 @@ def run_ocr(req: PredictRequest) -> PredictResponse:
     pdf_path: Path = DATA_DIR / req.pdf_name
     if not pdf_path.is_file():
         return PredictResponse(
-            message=f"pdf not found: {pdf_path}",
-            latency_ms=0.0,
+            message=f"pdf not found: {pdf_path}"
         )
-
-    start = time.perf_counter()
 
     _ = pipelines.predict(input_path=str(pdf_path), batch_size=1)
 
-    latency_ms = (time.perf_counter() - start) * 1000.0
-
     return PredictResponse(
-        message="ok",
-        latency_ms=latency_ms,
+        message="ok"
     )

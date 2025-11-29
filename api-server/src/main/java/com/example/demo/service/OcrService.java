@@ -22,7 +22,7 @@ public class OcrService {
 
 	public OcrResponse runSyncV0(OcrRequest request) {
 		OcrWorkerPredictResponse workerRes = ocrWorkerClient.predict(request.pdfName());
-		return new OcrResponse(workerRes.message(), workerRes.latencyMs());
+		return new OcrResponse(workerRes.message());
 	}
 
 	@Async("ocrExecutor")
@@ -33,6 +33,6 @@ public class OcrService {
 
 	public OcrResponse runSyncV2(OcrRequest request) {
 		OcrWorkerPredictResponse workerRes = ocrWorkerClientV2.predict(request.pdfName());
-		return new OcrResponse(workerRes.message(), workerRes.latencyMs());
+		return new OcrResponse(workerRes.message());
 	}
 }

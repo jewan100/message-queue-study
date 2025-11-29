@@ -12,4 +12,3 @@ class PredictRequest(BaseModel):
 
 class PredictResponse(BaseModel):
     message: str = Field(..., description="처리 결과 메시지")
-    latency_ms: float = Field(..., description="추론에 소요된 시간(ms)")
