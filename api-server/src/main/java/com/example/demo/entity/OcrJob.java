@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,13 +32,17 @@ public class OcrJob {
 	@Column(name = "pdf_name", nullable = false, length = 255)
 	private String pdfName;
 
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
+
 	@Builder
-	private OcrJob(OcrJobStatus status, String pdfName) {
+	private OcrJob(OcrJobStatus status, String pdfName, LocalDateTime createdAt) {
 		this.status = status;
 		this.pdfName = pdfName;
+		this.createdAt = createdAt;
 	}
 
 	public static OcrJob createPendingJob(String pdfName) {
-		return OcrJob.builder().status(OcrJobStatus.PENDING).pdfName(pdfName).build();
+		return OcrJob.builder().status(OcrJobStatus.PENDING).pdfName(pdfName).createdAt(LocalDateTime.now()).build();
 	}
 }

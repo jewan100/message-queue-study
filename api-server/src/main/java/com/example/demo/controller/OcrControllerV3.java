@@ -31,7 +31,7 @@ public class OcrControllerV3 {
 	}
 
 	@GetMapping("/jobs/{jobId}")
-	public ResponseEntity<OcrJobStatusResponse> getJobStatus(@PathVariable Long jobId) {
+	public ResponseEntity<OcrJobStatusResponse> getJobStatus(@PathVariable("jobId") Long jobId) {
 		OcrJobStatusResponse response = ocrService.getJobStatusV3(jobId);
 		return ResponseEntity.ok(response);
 	}
