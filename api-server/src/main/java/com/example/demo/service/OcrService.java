@@ -2,10 +2,12 @@ package com.example.demo.service;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.client.OcrJobQueueClient;
 import com.example.demo.client.OcrWorkerClient;
 import com.example.demo.client.OcrWorkerClientV2;
 import com.example.demo.dto.request.OcrRequest;
@@ -24,6 +26,9 @@ public class OcrService {
 
 	private final OcrWorkerClient ocrWorkerClient;
 	private final OcrWorkerClientV2 ocrWorkerClientV2;
+
+	@Qualifier("redisOcrJobQueueClient")
+	private final OcrJobQueueClient redisOcrJobQueueClient;
 
 	private final OcrJobRepository ocrJobRepository;
 
@@ -49,11 +54,21 @@ public class OcrService {
 		return new OcrJobCreateResponse(savedJob.getId(), savedJob.getStatus());
 	}
 
+	@Transactional
+	public OcrJobCreateResponse createJobV4(OcrRequest request) {
+		OcrJob savedJob = ocrJobRepository.save(OcrJob.createPendingJob(request.pdfName()));
+		
+		redisOcrJobQueueClient.enqueue(savedJob.getId(), savedJob.getPdfName());
+		
+		return new OcrJobCreateResponse(savedJob.getId(), savedJob.getStatus());
+	}
+
 	@Transactional(readOnly = true)
-	public OcrJobStatusResponse getJobStatusV3(Long jobId) {
+	public OcrJobStatusResponse getJobStatus(Long jobId) {
 		OcrJob job = ocrJobRepository.findById(jobId)
 				.orElseThrow(() -> new IllegalArgumentException("OCR Job not found. id=" + jobId));
 
 		return new OcrJobStatusResponse(job.getId(), job.getStatus());
 	}
+
 }

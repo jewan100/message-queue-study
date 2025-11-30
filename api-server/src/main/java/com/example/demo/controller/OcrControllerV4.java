@@ -18,15 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v3/ocr")
+@RequestMapping("/api/v4/ocr")
 @Slf4j
-public class OcrControllerV3 {
+public class OcrControllerV4 {
 
 	private final OcrService ocrService;
 
 	@PostMapping("/jobs")
 	public ResponseEntity<OcrJobCreateResponse> post(@RequestBody OcrRequest request) {
-		OcrJobCreateResponse response = ocrService.createJobV3(request);
+		OcrJobCreateResponse response = ocrService.createJobV4(request);
 		return ResponseEntity.ok(response);
 	}
 
