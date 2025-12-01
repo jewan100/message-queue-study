@@ -1,4 +1,4 @@
-# ocr-worker/workers/rabbit_worker_v5.py
+# ocr-worker/workers/rabbit_worker.py
 
 import json
 import os
