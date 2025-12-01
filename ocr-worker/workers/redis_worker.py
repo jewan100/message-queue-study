@@ -1,4 +1,4 @@
-# ocr-worker/workers/db_worker_v4.py
+# ocr-worker/workers/redis_worker.py
 import os
 import socket
 import time
