@@ -16,3 +16,15 @@ services:
     container_name: mq-redis
     ports:
       - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:4.2.1-management-alpine
+    container_name: mq-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: jewan
+      RABBITMQ_DEFAULT_PASS: jewan
+    volumes:
+      - ./infra/rabbitmq-data:/var/lib/rabbitmq

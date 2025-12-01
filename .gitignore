@@ -497,3 +497,4 @@ gradle-app.setting
 /ocr-worker/models/
 /ocr-worker/data/pdf/
 /infra/postgres-data/
+/infra/rabbitmq-data/
