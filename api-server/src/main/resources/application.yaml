@@ -21,6 +21,9 @@ spring:
     port: 5672
     username: jewan
     password: jewan
+  kafka:
+    bootstrap-servers: localhost:9092
+
 
 server:
   port: 8080

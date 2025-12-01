@@ -35,6 +35,9 @@ public class OcrService {
 	@Qualifier("rabbitOcrJobQueueClient")
 	private final OcrJobQueueClient rabbitOcrJobQueueClient;
 
+	@Qualifier("kafkaOcrJobQueueClient")
+	private final OcrJobQueueClient kafkaOcrJobQueueClient;
+
 	private final OcrJobRepository ocrJobRepository;
 
 	public OcrResponse runSyncV0(OcrRequest request) {
@@ -81,6 +84,20 @@ public class OcrService {
 			@Override
 			public void afterCommit() {
 				rabbitOcrJobQueueClient.enqueue(savedJob.getId(), savedJob.getPdfName());
+			}
+		});
+
+		return new OcrJobCreateResponse(savedJob.getId(), savedJob.getStatus());
+	}
+
+	@Transactional
+	public OcrJobCreateResponse createJobV6(OcrRequest request) {
+		OcrJob savedJob = ocrJobRepository.save(OcrJob.createPendingJob(request.pdfName()));
+
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+			@Override
+			public void afterCommit() {
+				kafkaOcrJobQueueClient.enqueue(savedJob.getId(), savedJob.getPdfName());
 			}
 		});
 
