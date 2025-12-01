@@ -9,12 +9,14 @@ import org.springframework.stereotype.Component;
 import com.example.demo.config.RabbitMqConfig;
 
 import lombok.RequiredArgsConstructor;
+import tools.jackson.databind.ObjectMapper;
 
 @Component("rabbitOcrJobQueueClient")
 @RequiredArgsConstructor
 public class RabbitOcrJobQueueClient implements OcrJobQueueClient {
 
 	private final RabbitTemplate rabbitTemplate;
+	private final ObjectMapper objectMapper;
 
 	@Override
 	public void enqueue(Long jobId, String pdfName) {
@@ -23,11 +25,17 @@ public class RabbitOcrJobQueueClient implements OcrJobQueueClient {
 		fields.put("pdfName", pdfName);
 		fields.put("createdAt", String.valueOf(System.currentTimeMillis()));
 
-		rabbitTemplate.convertAndSend(
-                RabbitMqConfig.EXCHANGE_NAME,
-                RabbitMqConfig.ROUTING_KEY,
-                fields
-        );
+        try {
+            String json = objectMapper.writeValueAsString(fields);
+
+            rabbitTemplate.convertAndSend(
+                    RabbitMqConfig.EXCHANGE_NAME,
+                    RabbitMqConfig.ROUTING_KEY,
+                    json
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to publish job to RabbitMQ", e);
+        }
 	}
 
 }
