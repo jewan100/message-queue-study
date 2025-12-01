@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.example.demo.client.OcrJobQueueClient;
 import com.example.demo.client.OcrWorkerClient;
@@ -58,8 +60,15 @@ public class OcrService {
 	public OcrJobCreateResponse createJobV4(OcrRequest request) {
 		OcrJob savedJob = ocrJobRepository.save(OcrJob.createPendingJob(request.pdfName()));
 		
-		redisOcrJobQueueClient.enqueue(savedJob.getId(), savedJob.getPdfName());
-		
+	    TransactionSynchronizationManager.registerSynchronization(
+	            new TransactionSynchronization() {
+	                @Override
+	                public void afterCommit() {
+						redisOcrJobQueueClient.enqueue(savedJob.getId(), savedJob.getPdfName());
+	                }
+	            }
+	        );
+	    
 		return new OcrJobCreateResponse(savedJob.getId(), savedJob.getStatus());
 	}
 
