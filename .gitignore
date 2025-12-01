@@ -498,3 +498,4 @@ gradle-app.setting
 /ocr-worker/data/pdf/
 /infra/postgres-data/
 /infra/rabbitmq-data/
+/infra/kafka-data/
