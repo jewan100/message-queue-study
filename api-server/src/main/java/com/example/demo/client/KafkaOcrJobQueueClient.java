@@ -27,7 +27,14 @@ public class KafkaOcrJobQueueClient implements OcrJobQueueClient {
 
 		try {
 			String json = objectMapper.writeValueAsString(fields);
-			kafkaTemplate.send(KafkaProducerConfig.TOPIC_NAME, json);
+			
+			// String key = String.valueOf(jobId);
+			// kafkaTemplate.send(KafkaProducerConfig.TOPIC_NAME, key, json);
+			// 균등하게 나눠갖질 않음
+			
+			int partition = (int) (jobId % 4);
+			kafkaTemplate.send(KafkaProducerConfig.TOPIC_NAME, partition, null, json);
+			
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to publish job to Kafka", e);
 		}
